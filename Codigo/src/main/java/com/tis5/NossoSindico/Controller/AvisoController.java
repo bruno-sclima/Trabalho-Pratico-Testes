@@ -28,10 +28,13 @@ public class AvisoController {
 
     @RequestMapping(method = RequestMethod.POST, value = "cadAviso")
     public ResponseEntity<Aviso> cadastro(@RequestBody AvisoResource aux) throws ParseException {
-        Condominio c = condominioService.getCondominioById(aux.getId_condominio());
-        Aviso av = Aviso.builder().condominio(c).conteudo(aux.getConteudo()).titulo(aux.getTitulo()).build();
-        Aviso aviso = service.create(av);
-        return ResponseEntity.ok(aviso);
+        Optional<Condominio> c = condominioService.getCondominioById(aux.getId_condominio());
+        if(c.isPresent()) {
+            Aviso av = Aviso.builder().condominio(c.get()).conteudo(aux.getConteudo()).titulo(aux.getTitulo()).build();
+            Aviso aviso = service.create(av);
+            return ResponseEntity.ok(aviso);
+        }
+        else return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "listAvisos")

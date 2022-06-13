@@ -33,11 +33,10 @@ public class AvisoService {
     }
 
     public Optional<List<Aviso>> listAvisosDeCondominio(long condominio_id){
-        Condominio condominio = condominioService.getCondominioById(condominio_id);
-        if(condominio != null) {
-            Optional<List<Aviso>> avisos = repository.findByCondominio(condominio);
-            return avisos;
-        }
-        return Optional.of(Collections.emptyList());
+        Optional<Condominio> condominio = condominioService.getCondominioById(condominio_id);
+            if(condominio.isPresent()) {
+                return repository.findByCondominio(condominio.get());
+            }
+            return Optional.of(Collections.emptyList());
     }
 }

@@ -3,7 +3,7 @@ package com.tis5.NossoSindico.Service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -112,17 +112,9 @@ class CondominioServiceTest {
         condominio.setRua("Rua");
         Optional<Condominio> ofResult = Optional.of(condominio);
         when(this.condominioRepository.findById((Long) any())).thenReturn(ofResult);
-        assertSame(condominio, this.condominioService.getCondominioById(123L));
-        verify(this.condominioRepository).findById((Long) any());
-    }
-
-    /**
-     * Method under test: {@link CondominioService#getCondominioById(long)}
-     */
-    @Test
-    void testGetCondominioById2() {
-        when(this.condominioRepository.findById((Long) any())).thenReturn(Optional.empty());
-        assertNull(this.condominioService.getCondominioById(123L));
+        Optional<Condominio> actualCondominioById = this.condominioService.getCondominioById(123L);
+        assertSame(ofResult, actualCondominioById);
+        assertTrue(actualCondominioById.isPresent());
         verify(this.condominioRepository).findById((Long) any());
     }
 

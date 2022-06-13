@@ -13,6 +13,7 @@ import com.tis5.NossoSindico.domain.Condominio;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -53,7 +55,8 @@ class AvisoControllerTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
 
         Condominio condominio1 = new Condominio();
         condominio1.setBairro("Bairro");
@@ -89,6 +92,44 @@ class AvisoControllerTest {
                         .string(
                                 "{\"id\":123,\"titulo\":\"Titulo\",\"conteudo\":\"Conteudo\",\"condominio\":{\"id\":123,\"nome\":\"Nome\",\"rua\":\"Rua\","
                                         + "\"bairro\":\"Bairro\",\"cep\":\"Cep\",\"cidade\":\"Cidade\",\"numero\":10,\"code\":\"Code\"}}"));
+    }
+
+    /**
+     * Method under test: {@link AvisoController#cadastro(AvisoResource)}
+     */
+    @Test
+    void testCadastro2() throws Exception {
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
+
+        Condominio condominio = new Condominio();
+        condominio.setBairro("Bairro");
+        condominio.setCep("Cep");
+        condominio.setCidade("Cidade");
+        condominio.setCode("Code");
+        condominio.setId(123L);
+        condominio.setNome("Nome");
+        condominio.setNumero(10);
+        condominio.setRua("Rua");
+
+        Aviso aviso = new Aviso();
+        aviso.setCondominio(condominio);
+        aviso.setConteudo("Conteudo");
+        aviso.setId(123L);
+        aviso.setTitulo("Titulo");
+        when(this.avisoService.create((Aviso) any())).thenReturn(aviso);
+
+        AvisoResource avisoResource = new AvisoResource();
+        avisoResource.setConteudo("Conteudo");
+        avisoResource.setId_condominio(1L);
+        avisoResource.setTitulo("Titulo");
+        String content = (new ObjectMapper()).writeValueAsString(avisoResource);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cadAviso")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.avisoController)
+                .build()
+                .perform(requestBuilder);
+        actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     /**

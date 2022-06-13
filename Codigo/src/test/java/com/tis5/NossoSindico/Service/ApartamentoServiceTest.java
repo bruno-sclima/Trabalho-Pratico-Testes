@@ -23,8 +23,6 @@ import java.util.List;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +118,8 @@ class ApartamentoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
         assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
         verify(this.condominioService).getCondominioById(anyLong());
@@ -132,6 +131,17 @@ class ApartamentoServiceTest {
      */
     @Test
     void testGetAptoByCondominioENumero2() {
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
+        assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
+        verify(this.condominioService).getCondominioById(anyLong());
+    }
+
+    /**
+     * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
+     */
+    @Test
+    void testGetAptoByCondominioENumero3() {
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -141,7 +151,8 @@ class ApartamentoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
 
         Condominio condominio1 = new Condominio();
         condominio1.setBairro("Bairro");
@@ -170,8 +181,8 @@ class ApartamentoServiceTest {
 
         ArrayList<Apartamento> apartamentoList = new ArrayList<>();
         apartamentoList.add(apartamento);
-        Optional<List<Apartamento>> ofResult = Optional.of(apartamentoList);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult);
+        Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
         assertSame(apartamento, this.apartamentoService.getAptoByCondominioENumero(1L, 10));
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
@@ -181,7 +192,7 @@ class ApartamentoServiceTest {
      * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
      */
     @Test
-    void testGetAptoByCondominioENumero3() {
+    void testGetAptoByCondominioENumero4() {
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -191,45 +202,12 @@ class ApartamentoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(null);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.empty());
         assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
-    }
-
-    /**
-     * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testGetAptoByCondominioENumero4() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ApartamentoService.listApartamentosDeCondominio(ApartamentoService.java:51)
-        //       at com.tis5.NossoSindico.Service.ApartamentoService.getAptoByCondominioENumero(ApartamentoService.java:32)
-        //   In order to prevent getAptoByCondominioENumero(long, int)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   getAptoByCondominioENumero(long, int).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        Condominio condominio = new Condominio();
-        condominio.setBairro("Bairro");
-        condominio.setCep("Cep");
-        condominio.setCidade("Cidade");
-        condominio.setCode("Code");
-        condominio.setId(123L);
-        condominio.setNome("Nome");
-        condominio.setNumero(10);
-        condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.empty());
-        this.apartamentoService.getAptoByCondominioENumero(1L, 10);
     }
 
     /**
@@ -246,7 +224,8 @@ class ApartamentoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
 
         Condominio condominio1 = new Condominio();
         condominio1.setBairro("Bairro");
@@ -281,8 +260,8 @@ class ApartamentoServiceTest {
 
         ArrayList<Apartamento> apartamentoList = new ArrayList<>();
         apartamentoList.add(apartamento);
-        Optional<List<Apartamento>> ofResult = Optional.of(apartamentoList);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult);
+        Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
         assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
@@ -357,7 +336,8 @@ class ApartamentoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
         assertTrue(this.apartamentoService.listApartamentosDeCondominio(1L).isEmpty());
         verify(this.condominioService).getCondominioById(anyLong());
@@ -369,6 +349,17 @@ class ApartamentoServiceTest {
      */
     @Test
     void testListApartamentosDeCondominio2() {
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
+        assertTrue(this.apartamentoService.listApartamentosDeCondominio(1L).isEmpty());
+        verify(this.condominioService).getCondominioById(anyLong());
+    }
+
+    /**
+     * Method under test: {@link ApartamentoService#listApartamentosDeCondominio(long)}
+     */
+    @Test
+    void testListApartamentosDeCondominio3() {
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -378,7 +369,8 @@ class ApartamentoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
 
         Condominio condominio1 = new Condominio();
         condominio1.setBairro("Bairro");
@@ -407,8 +399,8 @@ class ApartamentoServiceTest {
 
         ArrayList<Apartamento> apartamentoList = new ArrayList<>();
         apartamentoList.add(apartamento);
-        Optional<List<Apartamento>> ofResult = Optional.of(apartamentoList);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult);
+        Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
         List<Apartamento> actualListApartamentosDeCondominioResult = this.apartamentoService
                 .listApartamentosDeCondominio(1L);
         assertSame(apartamentoList, actualListApartamentosDeCondominioResult);
@@ -421,7 +413,7 @@ class ApartamentoServiceTest {
      * Method under test: {@link ApartamentoService#listApartamentosDeCondominio(long)}
      */
     @Test
-    void testListApartamentosDeCondominio3() {
+    void testListApartamentosDeCondominio4() {
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -431,44 +423,12 @@ class ApartamentoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(null);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.empty());
         assertTrue(this.apartamentoService.listApartamentosDeCondominio(1L).isEmpty());
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
-    }
-
-    /**
-     * Method under test: {@link ApartamentoService#listApartamentosDeCondominio(long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testListApartamentosDeCondominio4() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ApartamentoService.listApartamentosDeCondominio(ApartamentoService.java:51)
-        //   In order to prevent listApartamentosDeCondominio(long)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   listApartamentosDeCondominio(long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        Condominio condominio = new Condominio();
-        condominio.setBairro("Bairro");
-        condominio.setCep("Cep");
-        condominio.setCidade("Cidade");
-        condominio.setCode("Code");
-        condominio.setId(123L);
-        condominio.setNome("Nome");
-        condominio.setNumero(10);
-        condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.empty());
-        this.apartamentoService.listApartamentosDeCondominio(1L);
     }
 
     /**
@@ -540,21 +500,7 @@ class ApartamentoServiceTest {
      * Method under test: {@link ApartamentoService#isSindico(long, long)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
     void testIsSindico3() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ApartamentoService.isSindico(ApartamentoService.java:59)
-        //   In order to prevent isSindico(long, long)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   isSindico(long, long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
         Usuario usuario = new Usuario();
         usuario.setEmail("jane.doe@example.org");
         usuario.setId(123L);
@@ -563,7 +509,9 @@ class ApartamentoServiceTest {
         usuario.setSobrenome("Sobrenome");
         when(this.usuarioService.getUsuarioById(anyLong())).thenReturn(usuario);
         when(this.apartamentoRepository.findByUsuario((Usuario) any())).thenReturn(Optional.empty());
-        this.apartamentoService.isSindico(1L, 1L);
+        assertFalse(this.apartamentoService.isSindico(1L, 1L));
+        verify(this.usuarioService).getUsuarioById(anyLong());
+        verify(this.apartamentoRepository).findByUsuario((Usuario) any());
     }
 
     /**

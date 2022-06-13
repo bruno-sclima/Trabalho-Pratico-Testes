@@ -13,6 +13,9 @@ import com.tis5.NossoSindico.domain.Apartamento;
 import com.tis5.NossoSindico.domain.CadCondAptoResource;
 import com.tis5.NossoSindico.domain.Condominio;
 import com.tis5.NossoSindico.domain.Usuario;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -169,7 +173,8 @@ class CondominioControllerTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
 
         Condominio condominio1 = new Condominio();
         condominio1.setBairro("Bairro");
@@ -190,6 +195,32 @@ class CondominioControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
                 .andExpect(MockMvcResultMatchers.content().string("Code"));
+    }
+
+    /**
+     * Method under test: {@link CondominioController#codigoAcesso(Condominio)}
+     */
+    @Test
+    void testCodigoAcesso2() throws Exception {
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
+
+        Condominio condominio = new Condominio();
+        condominio.setBairro("Bairro");
+        condominio.setCep("Cep");
+        condominio.setCidade("Cidade");
+        condominio.setCode("Code");
+        condominio.setId(123L);
+        condominio.setNome("Nome");
+        condominio.setNumero(10);
+        condominio.setRua("Rua");
+        String content = (new ObjectMapper()).writeValueAsString(condominio);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/codigoAcesso")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.condominioController)
+                .build()
+                .perform(requestBuilder);
+        actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     /**

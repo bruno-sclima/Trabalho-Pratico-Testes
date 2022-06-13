@@ -20,18 +20,21 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class DespessaController {
     @Autowired
-    DespessaService service;
+    private DespessaService service;
 
     @Autowired
     private CondominioService condominioService;
 
     @RequestMapping(method = RequestMethod.POST, value = "cadDespessa")
     public ResponseEntity<Despessa> cadastro(@RequestBody DespessaResource aux) throws ParseException {
-        Condominio c = condominioService.getCondominioById(aux.getId_condominio());
-        Despessa d = Despessa.builder().condominio(c).data_referente(aux.getData_referente()).descricao(aux.getDescricao())
-                .titulo(aux.getTitulo()).valor(aux.getValor()).build();
-        Despessa despessa = service.create(d);
-        return ResponseEntity.ok(despessa);
+        Optional<Condominio> c = condominioService.getCondominioById(aux.getId_condominio());
+        if(c.isPresent()) {
+            Despessa d = Despessa.builder().condominio(c.get()).data_referente(aux.getData_referente()).descricao(aux.getDescricao())
+                    .titulo(aux.getTitulo()).valor(aux.getValor()).build();
+            Despessa despessa = service.create(d);
+            return ResponseEntity.ok(despessa);
+        }
+        else return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "listDespessa")

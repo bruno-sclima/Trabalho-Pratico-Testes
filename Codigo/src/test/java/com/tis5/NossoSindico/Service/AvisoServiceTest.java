@@ -130,14 +130,26 @@ class AvisoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
-        Optional<List<Aviso>> ofResult = Optional.of(new ArrayList<>());
-        when(this.avisoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult);
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
+        Optional<List<Aviso>> ofResult1 = Optional.of(new ArrayList<>());
+        when(this.avisoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
         Optional<List<Aviso>> actualListAvisosDeCondominioResult = this.avisoService.listAvisosDeCondominio(1L);
-        assertSame(ofResult, actualListAvisosDeCondominioResult);
+        assertSame(ofResult1, actualListAvisosDeCondominioResult);
         assertTrue(actualListAvisosDeCondominioResult.isPresent());
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.avisoRepository).findByCondominio((Condominio) any());
+    }
+
+    /**
+     * Method under test: {@link AvisoService#listAvisosDeCondominio(long)}
+     */
+    @Test
+    void testListAvisosDeCondominio2() {
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
+        when(this.avisoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
+        assertTrue(this.avisoService.listAvisosDeCondominio(1L).isPresent());
+        verify(this.condominioService).getCondominioById(anyLong());
     }
 }
 

@@ -13,10 +13,9 @@ import com.tis5.NossoSindico.domain.ReservaResource;
 import com.tis5.NossoSindico.domain.Usuario;
 
 import java.time.LocalDate;
-
 import java.util.ArrayList;
+import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -42,22 +42,95 @@ class ReservaControllerTest {
      * Method under test: {@link ReservaController#cria(ReservaResource)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testCria() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException: Cannot invoke "com.tis5.NossoSindico.Service.ReservaService.create(com.tis5.NossoSindico.domain.ReservaResource)" because "this.service" is null
-        //       at com.tis5.NossoSindico.Controller.ReservaController.cria(ReservaController.java:25)
-        //   In order to prevent cria(ReservaResource)
-        //   from throwing NullPointerException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   cria(ReservaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
+    void testCria() throws Exception {
+        Condominio condominio = new Condominio();
+        condominio.setBairro("Bairro");
+        condominio.setCep("Cep");
+        condominio.setCidade("Cidade");
+        condominio.setCode("Code");
+        condominio.setId(123L);
+        condominio.setNome("Nome");
+        condominio.setNumero(10);
+        condominio.setRua("Rua");
 
-        ReservaController reservaController = new ReservaController();
-        reservaController.cria(new ReservaResource());
+        Usuario usuario = new Usuario();
+        usuario.setEmail("jane.doe@example.org");
+        usuario.setId(123L);
+        usuario.setNome("Nome");
+        usuario.setSenha("Senha");
+        usuario.setSobrenome("Sobrenome");
+
+        Apartamento apartamento = new Apartamento();
+        apartamento.setBloco("Bloco");
+        apartamento.setCondominio(condominio);
+        apartamento.setId(123L);
+        apartamento.setNumero(10);
+        apartamento.setSindico(true);
+        apartamento.setUsuario(usuario);
+
+        Espaco espaco = new Espaco();
+        espaco.setCapacidadeMax(1);
+        espaco.setDescricao("Descricao");
+        espaco.setId(123L);
+        espaco.setId_condominio(1);
+        espaco.setNome("Nome");
+
+        Reserva reserva = new Reserva();
+        reserva.setApto(apartamento);
+        reserva.setData(LocalDate.ofEpochDay(1L));
+        reserva.setDescricao("Descricao");
+        reserva.setId(123L);
+        reserva.setLugar(espaco);
+        Optional<Reserva> ofResult = Optional.of(reserva);
+        when(this.reservaService.create((ReservaResource) any())).thenReturn(ofResult);
+
+        ReservaResource reservaResource = new ReservaResource();
+        reservaResource.setData(null);
+        reservaResource.setDescricao("Descricao");
+        reservaResource.setId_condominio(1L);
+        reservaResource.setId_espaco(1L);
+        reservaResource.setNumero(10);
+        reservaResource.setNumero_pessoas(10);
+        String content = (new ObjectMapper()).writeValueAsString(reservaResource);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/createReserva")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+        MockMvcBuilders.standaloneSetup(this.reservaController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string(
+                                "{\"id\":123,\"data\":[1970,1,2],\"apto\":{\"id\":123,\"bloco\":\"Bloco\",\"numero\":10,\"sindico\":true,\"condominio\""
+                                        + ":{\"id\":123,\"nome\":\"Nome\",\"rua\":\"Rua\",\"bairro\":\"Bairro\",\"cep\":\"Cep\",\"cidade\":\"Cidade\",\"numero\":10,\"code"
+                                        + "\":\"Code\"},\"usuario\":{\"id\":123,\"nome\":\"Nome\",\"sobrenome\":\"Sobrenome\",\"email\":\"jane.doe@example.org\","
+                                        + "\"senha\":\"Senha\"}},\"lugar\":{\"id\":123,\"nome\":\"Nome\",\"descricao\":\"Descricao\",\"capacidadeMax\":1,\"id"
+                                        + "_condominio\":1},\"descricao\":\"Descricao\"}"));
+    }
+
+    /**
+     * Method under test: {@link ReservaController#cria(ReservaResource)}
+     */
+    @Test
+    void testCria2() throws Exception {
+        when(this.reservaService.create((ReservaResource) any())).thenReturn(Optional.empty());
+
+        ReservaResource reservaResource = new ReservaResource();
+        reservaResource.setData(null);
+        reservaResource.setDescricao("Descricao");
+        reservaResource.setId_condominio(1L);
+        reservaResource.setId_espaco(1L);
+        reservaResource.setNumero(10);
+        reservaResource.setNumero_pessoas(10);
+        String content = (new ObjectMapper()).writeValueAsString(reservaResource);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/createReserva")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.reservaController)
+                .build()
+                .perform(requestBuilder);
+        actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     /**
@@ -155,8 +228,7 @@ class ReservaControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
-                        .string(
-                                "[{\"id\":123,\"data\":[1970,3,1],\"apto\":{\"id\":123,\"bloco\":\"?\",\"numero\":10,\"sindico\":true,\"condominio\":{"
+                        .string("[{\"id\":123,\"data\":[1970,3,1],\"apto\":{\"id\":123,\"bloco\":\"?\",\"numero\":10,\"sindico\":true,\"condominio\":{"
                                         + "\"id\":123,\"nome\":\"?\",\"rua\":\"?\",\"bairro\":\"?\",\"cep\":\"?\",\"cidade\":\"?\",\"numero\":10,\"code\":\"?\"},\"usuario\":"
                                         + "{\"id\":123,\"nome\":\"?\",\"sobrenome\":\"?\",\"email\":\"jane.doe@example.org\",\"senha\":\"?\"}},\"lugar\":{\"id\":123,"
                                         + "\"nome\":\"?\",\"descricao\":\"?\",\"capacidadeMax\":1,\"id_condominio\":1},\"descricao\":\"?\"}]"));

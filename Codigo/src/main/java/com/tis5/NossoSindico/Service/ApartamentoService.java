@@ -30,7 +30,7 @@ public class ApartamentoService {
 
     public Apartamento getAptoByCondominioENumero(long condominio_id,int numero){
         List<Apartamento> aptos = listApartamentosDeCondominio(condominio_id);
-        if(aptos != null && aptos.size() > 0){
+        if(!aptos.isEmpty()){
             Optional<Apartamento> apto = aptos.stream().filter(e -> e.getNumero() == numero).findFirst();
             if(apto.isPresent()) return apto.get();
         }
@@ -45,10 +45,15 @@ public class ApartamentoService {
     }
 
     public List<Apartamento> listApartamentosDeCondominio(long condominio_id){
-        Condominio condominio = condominioService.getCondominioById(condominio_id);
-        if(condominio != null) {
-            Optional<List<Apartamento>> aptos = repository.findByCondominio(condominio);
-            return (aptos != null && aptos.get().size() > 0) ? aptos.get() : Collections.emptyList();
+        Optional<Condominio> condominio = condominioService.getCondominioById(condominio_id);
+        if(condominio.isPresent()) {
+            Optional<List<Apartamento>> aptos = repository.findByCondominio(condominio.get());
+            if (aptos.isPresent()){
+                if(aptos.get().size() > 0){
+                    return aptos.get();
+                }
+            }
+            else return Collections.emptyList();
         }
         return Collections.emptyList();
     }
@@ -56,7 +61,7 @@ public class ApartamentoService {
     public boolean isSindico(long usuario_id,long condominio_id){
         Usuario usuario = usuarioService.getUsuarioById(usuario_id);
         Optional<List<Apartamento>> aptos = listAptosByUsuario(usuario);
-        if(aptos.get().size() >0){
+        if(aptos.isPresent() && (!aptos.get().isEmpty())){
             Optional<Apartamento> apto = aptos.get().stream().filter(e -> e.getCondominio().getId() == condominio_id).findFirst();
             if(apto.isPresent()) return apto.get().isSindico();
         }

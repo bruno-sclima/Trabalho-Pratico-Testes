@@ -25,13 +25,10 @@ public class CondominioService {
         return (condominios!=null && condominios.size() > 0 ? condominios : null);
     }
 
-    public Condominio getCondominioById(long id){
+    public Optional<Condominio> getCondominioById(long id){
         Optional<Condominio> condominio = condominioRepository.findById(id);
 
-        if(condominio.isPresent()) {
-            return condominio.get();
-
-        } else return null;
+        return condominio;
     }
 
     public Condominio getCondominioByNome(String nome){

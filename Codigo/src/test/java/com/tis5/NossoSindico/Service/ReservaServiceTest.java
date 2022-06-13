@@ -1,15 +1,17 @@
 package com.tis5.NossoSindico.Service;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 
 import com.tis5.NossoSindico.domain.Apartamento;
 import com.tis5.NossoSindico.domain.Condominio;
@@ -22,12 +24,12 @@ import com.tis5.NossoSindico.repository.EspacoRepository;
 import com.tis5.NossoSindico.repository.ReservaRepository;
 
 import java.time.LocalDate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Disabled;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,21 +59,7 @@ class ReservaServiceTest {
      * Method under test: {@link ReservaService#create(ReservaResource)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
     void testCreate() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ReservaService.create(ReservaService.java:32)
-        //   In order to prevent create(ReservaResource)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   create(ReservaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
-
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -90,65 +78,70 @@ class ReservaServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult1 = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult1);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
-        this.reservaService.create(new ReservaResource());
+        assertFalse(this.reservaService.create(new ReservaResource()).isPresent());
+        verify(this.espacoRepository).findById((Long) any());
+        verify(this.condominioService).getCondominioById(anyLong());
+        verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
     /**
      * Method under test: {@link ReservaService#create(ReservaResource)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testCreate2() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ReservaService.create(ReservaService.java:32)
-        //   In order to prevent create(ReservaResource)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   create(ReservaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        when(this.espacoRepository.findById((Long) any())).thenReturn(Optional.empty());
-
-        Condominio condominio = new Condominio();
-        condominio.setBairro("Bairro");
-        condominio.setCep("Cep");
-        condominio.setCidade("Cidade");
-        condominio.setCode("Code");
-        condominio.setId(123L);
-        condominio.setNome("Nome");
-        condominio.setNumero(10);
-        condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
-        this.reservaService.create(new ReservaResource());
-    }
-
-    /**
-     * Method under test: {@link ReservaService#create(ReservaResource)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
     void testCreate3() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ReservaService.create(ReservaService.java:32)
-        //   In order to prevent create(ReservaResource)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   create(ReservaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
+        Optional<Espaco> emptyResult = Optional.empty();
+        when(this.espacoRepository.findById((Long) any())).thenReturn(emptyResult);
 
+        Condominio condominio = new Condominio();
+        condominio.setBairro("Bairro");
+        condominio.setCep("Cep");
+        condominio.setCidade("Cidade");
+        condominio.setCode("Code");
+        condominio.setId(123L);
+        condominio.setNome("Nome");
+        condominio.setNumero(10);
+        condominio.setRua("Rua");
+        Optional<Condominio> ofResult = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
+        Optional<Reserva> actualCreateResult = this.reservaService.create(new ReservaResource());
+        assertSame(emptyResult, actualCreateResult);
+        assertFalse(actualCreateResult.isPresent());
+        verify(this.espacoRepository).findById((Long) any());
+        verify(this.condominioService).getCondominioById(anyLong());
+    }
+
+    /**
+     * Method under test: {@link ReservaService#create(ReservaResource)}
+     */
+    @Test
+    void testCreate5() {
+        Espaco espaco = new Espaco();
+        espaco.setCapacidadeMax(1);
+        espaco.setDescricao("Descricao");
+        espaco.setId(123L);
+        espaco.setId_condominio(1);
+        espaco.setNome("Nome");
+        Optional<Espaco> ofResult = Optional.of(espaco);
+        when(this.espacoRepository.findById((Long) any())).thenReturn(ofResult);
+        Optional<Condominio> emptyResult = Optional.empty();
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(emptyResult);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
+        Optional<Reserva> actualCreateResult = this.reservaService.create(new ReservaResource());
+        assertSame(emptyResult, actualCreateResult);
+        assertFalse(actualCreateResult.isPresent());
+        verify(this.espacoRepository).findById((Long) any());
+        verify(this.condominioService).getCondominioById(anyLong());
+    }
+
+    /**
+     * Method under test: {@link ReservaService#create(ReservaResource)}
+     */
+    @Test
+    void testCreate6() {
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -167,7 +160,8 @@ class ReservaServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult1 = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult1);
 
         Condominio condominio1 = new Condominio();
         condominio1.setBairro("Bairro");
@@ -196,30 +190,19 @@ class ReservaServiceTest {
 
         ArrayList<Apartamento> apartamentoList = new ArrayList<>();
         apartamentoList.add(apartamento);
-        Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
-        this.reservaService.create(new ReservaResource());
+        Optional<List<Apartamento>> ofResult2 = Optional.of(apartamentoList);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult2);
+        assertFalse(this.reservaService.create(new ReservaResource()).isPresent());
+        verify(this.espacoRepository).findById((Long) any());
+        verify(this.condominioService).getCondominioById(anyLong());
+        verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
     /**
      * Method under test: {@link ReservaService#create(ReservaResource)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testCreate4() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ReservaService.create(ReservaService.java:31)
-        //   In order to prevent create(ReservaResource)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   create(ReservaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
-
+    void testCreate8() {
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -238,29 +221,23 @@ class ReservaServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.empty());
-        this.reservaService.create(new ReservaResource());
+        Optional<Condominio> ofResult1 = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult1);
+        Optional<List<Apartamento>> emptyResult = Optional.empty();
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(emptyResult);
+        Optional<Reserva> actualCreateResult = this.reservaService.create(new ReservaResource());
+        assertSame(emptyResult, actualCreateResult);
+        assertFalse(actualCreateResult.isPresent());
+        verify(this.espacoRepository).findById((Long) any());
+        verify(this.condominioService).getCondominioById(anyLong());
+        verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
     /**
      * Method under test: {@link ReservaService#create(ReservaResource)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testCreate5() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException: Cannot invoke "com.tis5.NossoSindico.domain.ReservaResource.getId_espaco()" because "rr" is null
-        //       at com.tis5.NossoSindico.Service.ReservaService.create(ReservaService.java:28)
-        //   In order to prevent create(ReservaResource)
-        //   from throwing NullPointerException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   create(ReservaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
-
+    void testCreate9() {
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -279,30 +256,17 @@ class ReservaServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult1 = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult1);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
-        this.reservaService.create(null);
+        assertFalse(this.reservaService.create(null).isPresent());
     }
 
     /**
      * Method under test: {@link ReservaService#create(ReservaResource)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testCreate6() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.util.NoSuchElementException: No value present
-        //       at java.util.Optional.get(Optional.java:143)
-        //       at com.tis5.NossoSindico.Service.ReservaService.create(ReservaService.java:32)
-        //   In order to prevent create(ReservaResource)
-        //   from throwing NoSuchElementException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   create(ReservaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
-
+    void testCreate10() {
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -321,7 +285,8 @@ class ReservaServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(condominio);
+        Optional<Condominio> ofResult1 = Optional.of(condominio);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult1);
 
         Condominio condominio1 = new Condominio();
         condominio1.setBairro("Bairro");
@@ -376,9 +341,12 @@ class ReservaServiceTest {
         ArrayList<Apartamento> apartamentoList = new ArrayList<>();
         apartamentoList.add(apartamento1);
         apartamentoList.add(apartamento);
-        Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
-        this.reservaService.create(new ReservaResource());
+        Optional<List<Apartamento>> ofResult2 = Optional.of(apartamentoList);
+        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult2);
+        assertFalse(this.reservaService.create(new ReservaResource()).isPresent());
+        verify(this.espacoRepository).findById((Long) any());
+        verify(this.condominioService).getCondominioById(anyLong());
+        verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
     /**

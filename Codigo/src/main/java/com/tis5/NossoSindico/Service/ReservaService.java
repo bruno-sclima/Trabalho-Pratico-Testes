@@ -23,14 +23,21 @@ public class ReservaService {
     @Autowired
     private CondominioService condominioService;
 
-    public Reserva create(ReservaResource rr){
-
-        Optional<Espaco> e = espacoRepository.findById(rr.getId_espaco());
-        Condominio c = condominioService.getCondominioById(rr.getId_condominio());
-        Optional<List<Apartamento>> aptos = aptoRepository.findByCondominio(c);
-        Optional<Apartamento> apto = aptos.get().stream().filter(v -> v.getNumero() == rr.getNumero()).findFirst();
-        Reserva r = Reserva.builder().data(rr.getData()).lugar(e.get()).descricao(rr.getDescricao()).apto(apto.get()).build();
-        return repository.save(r);
+    public Optional<Reserva> create(ReservaResource rr){
+        if (rr != null) {
+            Optional<Espaco> e = espacoRepository.findById(rr.getId_espaco());
+            Optional<Condominio> c = condominioService.getCondominioById(rr.getId_condominio());
+                if (c.isPresent() && e.isPresent()) {
+                    Optional<List<Apartamento>> aptos = aptoRepository.findByCondominio(c.get());
+                    if (aptos.isPresent()) {
+                        Optional<Apartamento> apto = aptos.get().stream().filter(v -> v.getNumero() == rr.getNumero()).findFirst();
+                        if (apto.isPresent()) {
+                            Reserva r = Reserva.builder().data(rr.getData()).lugar(e.get()).descricao(rr.getDescricao()).apto(apto.get()).build();
+                            return Optional.of(repository.save(r));
+                        } else return Optional.empty();
+                    } else return Optional.empty();
+                } else return Optional.empty();
+        } else return Optional.empty();
     }
 
     public List<Reserva> listByCondominio (Condominio condominio) {

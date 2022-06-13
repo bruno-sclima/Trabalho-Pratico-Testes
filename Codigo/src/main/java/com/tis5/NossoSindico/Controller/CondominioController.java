@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.Optional;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -46,8 +47,8 @@ public class CondominioController {
 
     @RequestMapping(method = RequestMethod.GET, value = "codigoAcesso")
     public ResponseEntity<String> codigoAcesso(@RequestBody Condominio condominio){
-        Condominio cond = service.getCondominioById(condominio.getId());
-        return ResponseEntity.ok(cond.getCode());
+        Optional<Condominio> cond = service.getCondominioById(condominio.getId());
+        return (cond.isPresent()) ? ResponseEntity.ok(cond.get().getCode()) : ResponseEntity.notFound().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "attCond")

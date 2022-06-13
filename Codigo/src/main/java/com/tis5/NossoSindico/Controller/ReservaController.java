@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -22,7 +23,9 @@ public class ReservaController {
 
     @RequestMapping(method = RequestMethod.POST, value = "createReserva")
     public ResponseEntity<Reserva> cria(@RequestBody ReservaResource rr){
-        return ResponseEntity.ok(service.create(rr));
+        Optional<Reserva> r = service.create(rr);
+        if(r.isPresent()) return ResponseEntity.ok(r.get());
+        else return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "listReserva")
