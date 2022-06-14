@@ -36,11 +36,9 @@ class AvisoServiceTest {
     @MockBean
     private CondominioService condominioService;
 
-    /**
-     * Method under test: {@link AvisoService#create(Aviso)}
-     */
     @Test
-    void testCreate() {
+    void createTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -73,15 +71,16 @@ class AvisoServiceTest {
         aviso1.setConteudo("Conteudo");
         aviso1.setId(123L);
         aviso1.setTitulo("Titulo");
-        assertSame(aviso, this.avisoService.create(aviso1));
+        //when
+        Aviso avisoRes = this.avisoService.create(aviso1);
+        //then
+        assertSame(aviso, avisoRes);
         verify(this.avisoRepository).save((Aviso) any());
     }
 
-    /**
-     * Method under test: {@link AvisoService#deleteAvisoById(long)}
-     */
     @Test
-    void testDeleteAvisoById() {
+    void deleteAvisoByIdTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -100,27 +99,27 @@ class AvisoServiceTest {
         Optional<Aviso> ofResult = Optional.of(aviso);
         doNothing().when(this.avisoRepository).deleteById((Long) any());
         when(this.avisoRepository.findById((Long) any())).thenReturn(ofResult);
+        //when
         this.avisoService.deleteAvisoById(123L);
+        //then
         verify(this.avisoRepository).findById((Long) any());
         verify(this.avisoRepository).deleteById((Long) any());
     }
 
-    /**
-     * Method under test: {@link AvisoService#deleteAvisoById(long)}
-     */
     @Test
-    void testDeleteAvisoById2() {
+    void edleteAvisoByIdTest2() {
+        //given
         doNothing().when(this.avisoRepository).deleteById((Long) any());
         when(this.avisoRepository.findById((Long) any())).thenReturn(Optional.empty());
+        //when
         this.avisoService.deleteAvisoById(123L);
+        //then
         verify(this.avisoRepository).findById((Long) any());
     }
 
-    /**
-     * Method under test: {@link AvisoService#listAvisosDeCondominio(long)}
-     */
     @Test
-    void testListAvisosDeCondominio() {
+    void listAvisosDeCondominioTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -134,18 +133,17 @@ class AvisoServiceTest {
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
         Optional<List<Aviso>> ofResult1 = Optional.of(new ArrayList<>());
         when(this.avisoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
+        //when
         Optional<List<Aviso>> actualListAvisosDeCondominioResult = this.avisoService.listAvisosDeCondominio(1L);
+        //then
         assertSame(ofResult1, actualListAvisosDeCondominioResult);
         assertTrue(actualListAvisosDeCondominioResult.isPresent());
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.avisoRepository).findByCondominio((Condominio) any());
     }
 
-    /**
-     * Method under test: {@link AvisoService#listAvisosDeCondominio(long)}
-     */
     @Test
-    void testListAvisosDeCondominio2() {
+    void listAvisosDeCondominioTest2() {
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
         when(this.avisoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
         assertTrue(this.avisoService.listAvisosDeCondominio(1L).isPresent());

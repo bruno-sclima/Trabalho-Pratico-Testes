@@ -28,11 +28,9 @@ class EspacoServiceTest {
     @Autowired
     private EspacoService espacoService;
 
-    /**
-     * Method under test: {@link EspacoService#create(Espaco)}
-     */
     @Test
-    void testCreate() {
+    void createTest() {
+        //given
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -47,15 +45,16 @@ class EspacoServiceTest {
         espaco1.setId(123L);
         espaco1.setId_condominio(1);
         espaco1.setNome("Nome");
-        assertSame(espaco, this.espacoService.create(espaco1));
+        //when
+        Espaco actual =  this.espacoService.create(espaco1);
+        //then
+        assertSame(espaco,actual);
         verify(this.espacoRepository).save((Espaco) any());
     }
 
-    /**
-     * Method under test: {@link EspacoService#listByCondominio(Condominio)}
-     */
     @Test
-    void testListByCondominio() {
+    void listByCondominioTest() {
+        //given
         when(this.espacoRepository.findAll()).thenReturn(new ArrayList<>());
 
         Condominio condominio = new Condominio();
@@ -67,15 +66,13 @@ class EspacoServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
+        //then
         assertTrue(this.espacoService.listByCondominio(condominio).isPresent());
         verify(this.espacoRepository).findAll();
     }
 
-    /**
-     * Method under test: {@link EspacoService#listByCondominio(Condominio)}
-     */
     @Test
-    void testListByCondominio2() {
+    void listByCondominioTest2() {
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -100,48 +97,8 @@ class EspacoServiceTest {
         verify(this.espacoRepository).findAll();
     }
 
-    /**
-     * Method under test: {@link EspacoService#listByCondominio(Condominio)}
-     */
     @Test
-    void testListByCondominio3() {
-        Espaco espaco = new Espaco();
-        espaco.setCapacidadeMax(1);
-        espaco.setDescricao("Descricao");
-        espaco.setId(123L);
-        espaco.setId_condominio(1);
-        espaco.setNome("Nome");
-
-        Espaco espaco1 = new Espaco();
-        espaco1.setCapacidadeMax(1);
-        espaco1.setDescricao("Descricao");
-        espaco1.setId(123L);
-        espaco1.setId_condominio(1);
-        espaco1.setNome("Nome");
-
-        ArrayList<Espaco> espacoList = new ArrayList<>();
-        espacoList.add(espaco1);
-        espacoList.add(espaco);
-        when(this.espacoRepository.findAll()).thenReturn(espacoList);
-
-        Condominio condominio = new Condominio();
-        condominio.setBairro("Bairro");
-        condominio.setCep("Cep");
-        condominio.setCidade("Cidade");
-        condominio.setCode("Code");
-        condominio.setId(123L);
-        condominio.setNome("Nome");
-        condominio.setNumero(10);
-        condominio.setRua("Rua");
-        assertTrue(this.espacoService.listByCondominio(condominio).isPresent());
-        verify(this.espacoRepository).findAll();
-    }
-
-    /**
-     * Method under test: {@link EspacoService#listByCondominio(Condominio)}
-     */
-    @Test
-    void testListByCondominio4() {
+    void listByCondominioTest3() {
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");

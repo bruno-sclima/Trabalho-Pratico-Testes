@@ -45,7 +45,8 @@ class AvisoControllerTest {
      * Method under test: {@link AvisoController#cadastro(AvisoResource)}
      */
     @Test
-    void testCadastro() throws Exception {
+    void cadastroTest() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -80,9 +81,11 @@ class AvisoControllerTest {
         avisoResource.setId_condominio(1L);
         avisoResource.setTitulo("Titulo");
         String content = (new ObjectMapper()).writeValueAsString(avisoResource);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cadAviso")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.avisoController)
                 .build()
                 .perform(requestBuilder)
@@ -94,11 +97,9 @@ class AvisoControllerTest {
                                         + "\"bairro\":\"Bairro\",\"cep\":\"Cep\",\"cidade\":\"Cidade\",\"numero\":10,\"code\":\"Code\"}}"));
     }
 
-    /**
-     * Method under test: {@link AvisoController#cadastro(AvisoResource)}
-     */
     @Test
-    void testCadastro2() throws Exception {
+    void cadastro2Test() throws Exception {
+        //given
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
 
         Condominio condominio = new Condominio();
@@ -123,22 +124,21 @@ class AvisoControllerTest {
         avisoResource.setId_condominio(1L);
         avisoResource.setTitulo("Titulo");
         String content = (new ObjectMapper()).writeValueAsString(avisoResource);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cadAviso")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.avisoController)
                 .build()
                 .perform(requestBuilder);
         actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
-    /**
-     * Method under test: {@link AvisoController#listAvisos(Condominio)}
-     */
     @Test
-    void testListAvisos() throws Exception {
+    void listAvisosTest() throws Exception {
+        //given
         when(this.avisoService.listAvisosDeCondominio(anyLong())).thenReturn(Optional.of(new ArrayList<>()));
-
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -149,9 +149,11 @@ class AvisoControllerTest {
         condominio.setNumero(10);
         condominio.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listAvisos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.avisoController)
                 .build()
                 .perform(requestBuilder)
@@ -160,11 +162,9 @@ class AvisoControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
-    /**
-     * Method under test: {@link AvisoController#listAvisos(Condominio)}
-     */
     @Test
-    void testListAvisos2() throws Exception {
+    void listAvisos2Test() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("?");
         condominio.setCep("?");
@@ -196,9 +196,11 @@ class AvisoControllerTest {
         condominio1.setNumero(10);
         condominio1.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listAvisos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.avisoController)
                 .build()
                 .perform(requestBuilder)

@@ -34,11 +34,10 @@ class DespessaServiceTest {
     @Autowired
     private DespessaService despessaService;
 
-    /**
-     * Method under test: {@link DespessaService#create(Despessa)}
-     */
+
     @Test
-    void testCreate() {
+    void createTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -75,15 +74,16 @@ class DespessaServiceTest {
         despessa1.setId(123L);
         despessa1.setTitulo("Titulo");
         despessa1.setValor(10.0d);
-        assertSame(despessa, this.despessaService.create(despessa1));
+        //when
+        Despessa actual =  this.despessaService.create(despessa1);
+        //then
+        assertSame(despessa,actual);
         verify(this.despessaRepository).save((Despessa) any());
     }
 
-    /**
-     * Method under test: {@link DespessaService#listDespessasCondominio(Condominio)}
-     */
     @Test
-    void testListDespessasCondominio() {
+    void listDespessasCondominioTest() {
+        //given
         Optional<List<Despessa>> ofResult = Optional.of(new ArrayList<>());
         when(this.despessaRepository.findByCondominio((Condominio) any())).thenReturn(ofResult);
 
@@ -96,10 +96,12 @@ class DespessaServiceTest {
         condominio.setNome("Nome");
         condominio.setNumero(10);
         condominio.setRua("Rua");
-        Optional<List<Despessa>> actualListDespessasCondominioResult = this.despessaService
+        //when
+        Optional<List<Despessa>> actual = this.despessaService
                 .listDespessasCondominio(condominio);
-        assertSame(ofResult, actualListDespessasCondominioResult);
-        assertTrue(actualListDespessasCondominioResult.isPresent());
+        //then
+        assertSame(ofResult, actual);
+        assertTrue(actual.isPresent());
         verify(this.despessaRepository).findByCondominio((Condominio) any());
     }
 }

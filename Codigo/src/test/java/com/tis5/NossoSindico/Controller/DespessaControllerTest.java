@@ -45,9 +45,6 @@ class DespessaControllerTest {
     @MockBean
     private DespessaService despessaService;
 
-    /**
-     * Method under test: {@link DespessaController#cadastro(DespessaResource)}
-     */
     @Test
     @Disabled("TODO: Complete this test")
     void testCadastro() throws ParseException {
@@ -74,10 +71,7 @@ class DespessaControllerTest {
         despessaController.cadastro(despessaResource);
     }
 
-    /**
-     * Method under test: {@link DespessaController#cadastro(DespessaResource)}
-     */
-    @Test
+
     @Disabled("TODO: Complete this test")
     void testCadastro2() throws ParseException {
         // TODO: Complete this test.
@@ -108,11 +102,10 @@ class DespessaControllerTest {
         despessaController.cadastro(despessaResource);
     }
 
-    /**
-     * Method under test: {@link DespessaController#listDespessas(Condominio)}
-     */
+
     @Test
-    void testListDespessas() throws Exception {
+    void listDespessasTest() throws Exception {
+        //given
         when(this.despessaService.listDespessasCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
 
         Condominio condominio = new Condominio();
@@ -125,9 +118,11 @@ class DespessaControllerTest {
         condominio.setNumero(10);
         condominio.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listDespessa")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.despessaController)
                 .build()
                 .perform(requestBuilder)
@@ -136,11 +131,9 @@ class DespessaControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
-    /**
-     * Method under test: {@link DespessaController#listDespessas(Condominio)}
-     */
     @Test
-    void testListDespessas2() throws Exception {
+    void listDespessas2Test() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("?");
         condominio.setCep("?");
@@ -174,9 +167,11 @@ class DespessaControllerTest {
         condominio1.setNumero(10);
         condominio1.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listDespessa")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.despessaController)
                 .build()
                 .perform(requestBuilder)
@@ -188,11 +183,10 @@ class DespessaControllerTest {
                                         + ":123,\"nome\":\"?\",\"rua\":\"?\",\"bairro\":\"?\",\"cep\":\"?\",\"cidade\":\"?\",\"numero\":10,\"code\":\"?\"}}]"));
     }
 
-    /**
-     * Method under test: {@link DespessaController#listDespessas(Condominio)}
-     */
+
     @Test
-    void testListDespessas3() throws Exception {
+    void listDespessas3Test() throws Exception {
+        //given
         when(this.despessaService.listDespessasCondominio((Condominio) any())).thenReturn(Optional.empty());
 
         Condominio condominio = new Condominio();
@@ -205,9 +199,11 @@ class DespessaControllerTest {
         condominio.setNumero(10);
         condominio.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listDespessa")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.despessaController)
                 .build()
                 .perform(requestBuilder)

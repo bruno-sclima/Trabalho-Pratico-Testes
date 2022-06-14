@@ -32,11 +32,9 @@ class EspacoControllerTest {
     @MockBean
     private EspacoService espacoService;
 
-    /**
-     * Method under test: {@link EspacoController#cria(Espaco)}
-     */
     @Test
-    void testCria() throws Exception {
+    void criaTest() throws Exception {
+        //given
         Espaco espaco = new Espaco();
         espaco.setCapacidadeMax(1);
         espaco.setDescricao("Descricao");
@@ -52,9 +50,11 @@ class EspacoControllerTest {
         espaco1.setId_condominio(1);
         espaco1.setNome("Nome");
         String content = (new ObjectMapper()).writeValueAsString(espaco1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/createEspaco")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.espacoController)
                 .build()
                 .perform(requestBuilder)
@@ -65,11 +65,9 @@ class EspacoControllerTest {
                                 "{\"id\":123,\"nome\":\"Nome\",\"descricao\":\"Descricao\",\"capacidadeMax\":1,\"id_condominio\":1}"));
     }
 
-    /**
-     * Method under test: {@link EspacoController#lista(Condominio)}
-     */
     @Test
-    void testLista() throws Exception {
+    void listaTest() throws Exception {
+        //given
         when(this.espacoService.listByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
 
         Condominio condominio = new Condominio();
@@ -82,9 +80,11 @@ class EspacoControllerTest {
         condominio.setNumero(10);
         condominio.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listEspaco")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.espacoController)
                 .build()
                 .perform(requestBuilder)
@@ -93,11 +93,9 @@ class EspacoControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
-    /**
-     * Method under test: {@link EspacoController#lista(Condominio)}
-     */
     @Test
-    void testLista2() throws Exception {
+    void lista2Test() throws Exception {
+        //given
         when(this.espacoService.listByCondominio((Condominio) any())).thenReturn(Optional.empty());
 
         Condominio condominio = new Condominio();
@@ -110,9 +108,11 @@ class EspacoControllerTest {
         condominio.setNumero(10);
         condominio.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listEspaco")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.espacoController)
                 .build()
                 .perform(requestBuilder)

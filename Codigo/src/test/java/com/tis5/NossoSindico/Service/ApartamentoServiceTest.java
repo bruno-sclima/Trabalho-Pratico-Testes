@@ -45,11 +45,8 @@ class ApartamentoServiceTest {
     @MockBean
     private UsuarioService usuarioService;
 
-    /**
-     * Method under test: {@link ApartamentoService#create(Apartamento)}
-     */
     @Test
-    void testCreate() {
+    void createTest() {
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -61,7 +58,7 @@ class ApartamentoServiceTest {
         condominio.setRua("Rua");
 
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("exemplo@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -87,7 +84,7 @@ class ApartamentoServiceTest {
         condominio1.setRua("Rua");
 
         Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
+        usuario1.setEmail("exemplo@gmail.com");
         usuario1.setId(123L);
         usuario1.setNome("Nome");
         usuario1.setSenha("Senha");
@@ -100,15 +97,15 @@ class ApartamentoServiceTest {
         apartamento1.setNumero(10);
         apartamento1.setSindico(true);
         apartamento1.setUsuario(usuario1);
+        //when
         assertSame(apartamento, this.apartamentoService.create(apartamento1));
+        //then
         verify(this.apartamentoRepository).save((Apartamento) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
-     */
     @Test
-    void testGetAptoByCondominioENumero() {
+    void getAptoByCondominioENumeroTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -121,27 +118,25 @@ class ApartamentoServiceTest {
         Optional<Condominio> ofResult = Optional.of(condominio);
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
+        //then
         assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
-     */
     @Test
-    void testGetAptoByCondominioENumero2() {
+    void getAptoByCondominioENumeroTest2() {
+        //given
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
+        //then
         assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
         verify(this.condominioService).getCondominioById(anyLong());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
-     */
     @Test
-    void testGetAptoByCondominioENumero3() {
+    void getAptoByCondominioENumeroTest3() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -183,102 +178,17 @@ class ApartamentoServiceTest {
         apartamentoList.add(apartamento);
         Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
-        assertSame(apartamento, this.apartamentoService.getAptoByCondominioENumero(1L, 10));
+        //when
+        Apartamento actual = this.apartamentoService.getAptoByCondominioENumero(1L, 10);
+        //then
+        assertSame(apartamento, actual);
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
-     */
     @Test
-    void testGetAptoByCondominioENumero4() {
-        Condominio condominio = new Condominio();
-        condominio.setBairro("Bairro");
-        condominio.setCep("Cep");
-        condominio.setCidade("Cidade");
-        condominio.setCode("Code");
-        condominio.setId(123L);
-        condominio.setNome("Nome");
-        condominio.setNumero(10);
-        condominio.setRua("Rua");
-        Optional<Condominio> ofResult = Optional.of(condominio);
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.empty());
-        assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
-        verify(this.condominioService).getCondominioById(anyLong());
-        verify(this.apartamentoRepository).findByCondominio((Condominio) any());
-    }
-
-    /**
-     * Method under test: {@link ApartamentoService#getAptoByCondominioENumero(long, int)}
-     */
-    @Test
-    void testGetAptoByCondominioENumero5() {
-        Condominio condominio = new Condominio();
-        condominio.setBairro("Bairro");
-        condominio.setCep("Cep");
-        condominio.setCidade("Cidade");
-        condominio.setCode("Code");
-        condominio.setId(123L);
-        condominio.setNome("Nome");
-        condominio.setNumero(10);
-        condominio.setRua("Rua");
-        Optional<Condominio> ofResult = Optional.of(condominio);
-        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
-
-        Condominio condominio1 = new Condominio();
-        condominio1.setBairro("Bairro");
-        condominio1.setCep("Cep");
-        condominio1.setCidade("Cidade");
-        condominio1.setCode("Code");
-        condominio1.setId(123L);
-        condominio1.setNome("Nome");
-        condominio1.setNumero(10);
-        condominio1.setRua("Rua");
-
-        Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
-        usuario.setId(123L);
-        usuario.setNome("Nome");
-        usuario.setSenha("Senha");
-        usuario.setSobrenome("Sobrenome");
-        Apartamento apartamento = mock(Apartamento.class);
-        when(apartamento.getNumero()).thenReturn(1);
-        doNothing().when(apartamento).setBloco((String) any());
-        doNothing().when(apartamento).setCondominio((Condominio) any());
-        doNothing().when(apartamento).setId(anyLong());
-        doNothing().when(apartamento).setNumero((Integer) any());
-        doNothing().when(apartamento).setSindico(anyBoolean());
-        doNothing().when(apartamento).setUsuario((Usuario) any());
-        apartamento.setBloco("Bloco");
-        apartamento.setCondominio(condominio1);
-        apartamento.setId(123L);
-        apartamento.setNumero(10);
-        apartamento.setSindico(true);
-        apartamento.setUsuario(usuario);
-
-        ArrayList<Apartamento> apartamentoList = new ArrayList<>();
-        apartamentoList.add(apartamento);
-        Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
-        when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
-        assertNull(this.apartamentoService.getAptoByCondominioENumero(1L, 10));
-        verify(this.condominioService).getCondominioById(anyLong());
-        verify(this.apartamentoRepository).findByCondominio((Condominio) any());
-        verify(apartamento).getNumero();
-        verify(apartamento).setBloco((String) any());
-        verify(apartamento).setCondominio((Condominio) any());
-        verify(apartamento).setId(anyLong());
-        verify(apartamento).setNumero((Integer) any());
-        verify(apartamento).setSindico(anyBoolean());
-        verify(apartamento).setUsuario((Usuario) any());
-    }
-
-    /**
-     * Method under test: {@link ApartamentoService#deleteAptoById(long)}
-     */
-    @Test
-    void testDeleteAptoById() {
+    void deleteAptoByIdTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -306,27 +216,27 @@ class ApartamentoServiceTest {
         Optional<Apartamento> ofResult = Optional.of(apartamento);
         doNothing().when(this.apartamentoRepository).deleteById((Long) any());
         when(this.apartamentoRepository.findById((Long) any())).thenReturn(ofResult);
+        //when
         this.apartamentoService.deleteAptoById(123L);
+        //then
         verify(this.apartamentoRepository).findById((Long) any());
         verify(this.apartamentoRepository).deleteById((Long) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#deleteAptoById(long)}
-     */
     @Test
-    void testDeleteAptoById2() {
+    void deleteAptoByIdtest2() {
+        //given
         doNothing().when(this.apartamentoRepository).deleteById((Long) any());
         when(this.apartamentoRepository.findById((Long) any())).thenReturn(Optional.empty());
+        //when
         this.apartamentoService.deleteAptoById(123L);
+        //then
         verify(this.apartamentoRepository).findById((Long) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#listApartamentosDeCondominio(long)}
-     */
     @Test
-    void testListApartamentosDeCondominio() {
+    void listApartamentosDeCondominioTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -339,27 +249,27 @@ class ApartamentoServiceTest {
         Optional<Condominio> ofResult = Optional.of(condominio);
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
-        assertTrue(this.apartamentoService.listApartamentosDeCondominio(1L).isEmpty());
+        //when
+        List<Apartamento> aptos = this.apartamentoService.listApartamentosDeCondominio(1L);
+        //then
+        assertTrue(aptos.isEmpty());
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#listApartamentosDeCondominio(long)}
-     */
     @Test
-    void testListApartamentosDeCondominio2() {
+    void listApartamentosDeCondominioTest2() {
+        //given
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.of(new ArrayList<>()));
         assertTrue(this.apartamentoService.listApartamentosDeCondominio(1L).isEmpty());
         verify(this.condominioService).getCondominioById(anyLong());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#listApartamentosDeCondominio(long)}
-     */
+
     @Test
-    void testListApartamentosDeCondominio3() {
+    void listApartamentosDeCondominioTest3() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -401,19 +311,20 @@ class ApartamentoServiceTest {
         apartamentoList.add(apartamento);
         Optional<List<Apartamento>> ofResult1 = Optional.of(apartamentoList);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(ofResult1);
-        List<Apartamento> actualListApartamentosDeCondominioResult = this.apartamentoService
+        //when
+        List<Apartamento> actual = this.apartamentoService
                 .listApartamentosDeCondominio(1L);
-        assertSame(apartamentoList, actualListApartamentosDeCondominioResult);
-        assertEquals(1, actualListApartamentosDeCondominioResult.size());
+        //then
+        assertSame(apartamentoList, actual);
+        assertEquals(1, actual.size());
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#listApartamentosDeCondominio(long)}
-     */
+
     @Test
-    void testListApartamentosDeCondominio4() {
+    void listApartamentosDeCondominioTest4() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -426,36 +337,39 @@ class ApartamentoServiceTest {
         Optional<Condominio> ofResult = Optional.of(condominio);
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
         when(this.apartamentoRepository.findByCondominio((Condominio) any())).thenReturn(Optional.empty());
-        assertTrue(this.apartamentoService.listApartamentosDeCondominio(1L).isEmpty());
+        //when
+        List<Apartamento> aptos = this.apartamentoService.listApartamentosDeCondominio(1L);
+        //then
+        assertTrue(aptos.isEmpty());
         verify(this.condominioService).getCondominioById(anyLong());
         verify(this.apartamentoRepository).findByCondominio((Condominio) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#isSindico(long, long)}
-     */
     @Test
-    void testIsSindico() {
+    void isSindicoTest() {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("test@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
         usuario.setSobrenome("Sobrenome");
         when(this.usuarioService.getUsuarioById(anyLong())).thenReturn(usuario);
-        when(this.apartamentoRepository.findByUsuario((Usuario) any())).thenReturn(Optional.of(new ArrayList<>()));
-        assertFalse(this.apartamentoService.isSindico(1L, 1L));
+        when(this.apartamentoRepository.findByUsuario((Usuario) any()))
+                .thenReturn(Optional.of(new ArrayList<>()));
+        //when
+        boolean resp = this.apartamentoService.isSindico(1L, 1L);
+        //then
+        assertFalse(resp);
         verify(this.usuarioService).getUsuarioById(anyLong());
         verify(this.apartamentoRepository).findByUsuario((Usuario) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#isSindico(long, long)}
-     */
     @Test
-    void testIsSindico2() {
+    void isSindicoTest2() {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("teste@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -496,31 +410,12 @@ class ApartamentoServiceTest {
         verify(this.apartamentoRepository).findByUsuario((Usuario) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#isSindico(long, long)}
-     */
-    @Test
-    void testIsSindico3() {
-        Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
-        usuario.setId(123L);
-        usuario.setNome("Nome");
-        usuario.setSenha("Senha");
-        usuario.setSobrenome("Sobrenome");
-        when(this.usuarioService.getUsuarioById(anyLong())).thenReturn(usuario);
-        when(this.apartamentoRepository.findByUsuario((Usuario) any())).thenReturn(Optional.empty());
-        assertFalse(this.apartamentoService.isSindico(1L, 1L));
-        verify(this.usuarioService).getUsuarioById(anyLong());
-        verify(this.apartamentoRepository).findByUsuario((Usuario) any());
-    }
 
-    /**
-     * Method under test: {@link ApartamentoService#isSindico(long, long)}
-     */
     @Test
-    void testIsSindico4() {
+    void isSindicoTest3() {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("teste@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -538,80 +433,7 @@ class ApartamentoServiceTest {
         condominio.setRua("Rua");
 
         Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
-        usuario1.setId(123L);
-        usuario1.setNome("Nome");
-        usuario1.setSenha("Senha");
-        usuario1.setSobrenome("Sobrenome");
-
-        Apartamento apartamento = new Apartamento();
-        apartamento.setBloco("Bloco");
-        apartamento.setCondominio(condominio);
-        apartamento.setId(123L);
-        apartamento.setNumero(10);
-        apartamento.setSindico(true);
-        apartamento.setUsuario(usuario1);
-
-        Condominio condominio1 = new Condominio();
-        condominio1.setBairro("Bairro");
-        condominio1.setCep("Cep");
-        condominio1.setCidade("Cidade");
-        condominio1.setCode("Code");
-        condominio1.setId(123L);
-        condominio1.setNome("Nome");
-        condominio1.setNumero(10);
-        condominio1.setRua("Rua");
-
-        Usuario usuario2 = new Usuario();
-        usuario2.setEmail("jane.doe@example.org");
-        usuario2.setId(123L);
-        usuario2.setNome("Nome");
-        usuario2.setSenha("Senha");
-        usuario2.setSobrenome("Sobrenome");
-
-        Apartamento apartamento1 = new Apartamento();
-        apartamento1.setBloco("Bloco");
-        apartamento1.setCondominio(condominio1);
-        apartamento1.setId(123L);
-        apartamento1.setNumero(10);
-        apartamento1.setSindico(true);
-        apartamento1.setUsuario(usuario2);
-
-        ArrayList<Apartamento> apartamentoList = new ArrayList<>();
-        apartamentoList.add(apartamento1);
-        apartamentoList.add(apartamento);
-        Optional<List<Apartamento>> ofResult = Optional.of(apartamentoList);
-        when(this.apartamentoRepository.findByUsuario((Usuario) any())).thenReturn(ofResult);
-        assertFalse(this.apartamentoService.isSindico(1L, 1L));
-        verify(this.usuarioService).getUsuarioById(anyLong());
-        verify(this.apartamentoRepository).findByUsuario((Usuario) any());
-    }
-
-    /**
-     * Method under test: {@link ApartamentoService#isSindico(long, long)}
-     */
-    @Test
-    void testIsSindico5() {
-        Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
-        usuario.setId(123L);
-        usuario.setNome("Nome");
-        usuario.setSenha("Senha");
-        usuario.setSobrenome("Sobrenome");
-        when(this.usuarioService.getUsuarioById(anyLong())).thenReturn(usuario);
-
-        Condominio condominio = new Condominio();
-        condominio.setBairro("Bairro");
-        condominio.setCep("Cep");
-        condominio.setCidade("Cidade");
-        condominio.setCode("Code");
-        condominio.setId(123L);
-        condominio.setNome("Nome");
-        condominio.setNumero(10);
-        condominio.setRua("Rua");
-
-        Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
+        usuario1.setEmail("teste@gmail.com");
         usuario1.setId(123L);
         usuario1.setNome("Nome");
         usuario1.setSenha("Senha");
@@ -659,16 +481,13 @@ class ApartamentoServiceTest {
         verify(apartamento).setUsuario((Usuario) any());
     }
 
-    /**
-     * Method under test: {@link ApartamentoService#listAptosByUsuario(Usuario)}
-     */
     @Test
-    void testListAptosByUsuario() {
+    void listAptosByUsuarioTest() {
         Optional<List<Apartamento>> ofResult = Optional.of(new ArrayList<>());
         when(this.apartamentoRepository.findByUsuario((Usuario) any())).thenReturn(ofResult);
 
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("teste@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");

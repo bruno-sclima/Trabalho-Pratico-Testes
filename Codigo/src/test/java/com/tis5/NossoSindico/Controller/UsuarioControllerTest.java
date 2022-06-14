@@ -42,13 +42,11 @@ class UsuarioControllerTest {
     @MockBean
     private UsuarioService usuarioService;
 
-    /**
-     * Method under test: {@link UsuarioController#attUsuario(Usuario)}
-     */
     @Test
-    void testAttUsuario() throws Exception {
+    void attUsuarioTest() throws Exception {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("exemplo@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -56,15 +54,17 @@ class UsuarioControllerTest {
         when(this.usuarioService.update((Usuario) any())).thenReturn(usuario);
 
         Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
+        usuario1.setEmail("exemplo@gmail.com");
         usuario1.setId(123L);
         usuario1.setNome("Nome");
         usuario1.setSenha("Senha");
         usuario1.setSobrenome("Sobrenome");
         String content = (new ObjectMapper()).writeValueAsString(usuario1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/att")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //test
         MockMvcBuilders.standaloneSetup(this.usuarioController)
                 .build()
                 .perform(requestBuilder)
@@ -73,13 +73,11 @@ class UsuarioControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("Atualizei o Roberto"));
     }
 
-    /**
-     * Method under test: {@link UsuarioController#cadastro(Usuario)}
-     */
     @Test
-    void testCadastro() throws Exception {
+    void cadastroTest() throws Exception {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("exemplo@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -87,15 +85,17 @@ class UsuarioControllerTest {
         when(this.usuarioService.createUsuario((Usuario) any())).thenReturn(usuario);
 
         Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
+        usuario1.setEmail("exemplo@gmail.com");
         usuario1.setId(123L);
         usuario1.setNome("Nome");
         usuario1.setSenha("Senha");
         usuario1.setSobrenome("Sobrenome");
         String content = (new ObjectMapper()).writeValueAsString(usuario1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cadastro")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.usuarioController)
                 .build()
                 .perform(requestBuilder)
@@ -103,14 +103,11 @@ class UsuarioControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
                         .string(
-                                "{\"id\":123,\"nome\":\"Nome\",\"sobrenome\":\"Sobrenome\",\"email\":\"jane.doe@example.org\",\"senha\":\"Senha\"}"));
+                                "{\"id\":123,\"nome\":\"Nome\",\"sobrenome\":\"Sobrenome\",\"email\":\"exemplo@gmail.com\",\"senha\":\"Senha\"}"));
     }
 
-    /**
-     * Method under test: {@link UsuarioController#deleteUsuario(Usuario)}
-     */
     @Test
-    void testDeleteUsuario() throws Exception {
+    void deleteUsuarioTest() throws Exception {
         doNothing().when(this.usuarioService).deleteUsuarioById(anyLong());
 
         Usuario usuario = new Usuario();
@@ -131,30 +128,27 @@ class UsuarioControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("Josue deletado"));
     }
 
-    /**
-     * Method under test: {@link UsuarioController#getAptoUsuario(Usuario)}
-     */
     @Test
-    void testGetAptoUsuario() throws Exception {
+    void getAptoUsuarioTest() throws Exception {
         Condominio condominio = new Condominio();
-        condominio.setBairro("?");
-        condominio.setCep("?");
-        condominio.setCidade("?");
-        condominio.setCode("?");
+        condominio.setBairro("Bairro");
+        condominio.setCep("Cep");
+        condominio.setCidade("Cidade");
+        condominio.setCode("Code");
         condominio.setId(123L);
-        condominio.setNome("?");
+        condominio.setNome("Nome");
         condominio.setNumero(10);
-        condominio.setRua("?");
+        condominio.setRua("Rua");
 
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("exemplo@gmail.com");
         usuario.setId(123L);
-        usuario.setNome("?");
-        usuario.setSenha("?");
-        usuario.setSobrenome("?");
+        usuario.setNome("Nome");
+        usuario.setSenha("Senha");
+        usuario.setSobrenome("Sobrenome");
 
         Apartamento apartamento = new Apartamento();
-        apartamento.setBloco("?");
+        apartamento.setBloco("Bloco");
         apartamento.setCondominio(condominio);
         apartamento.setId(123L);
         apartamento.setNumero(10);
@@ -173,9 +167,11 @@ class UsuarioControllerTest {
         usuario1.setSenha("Senha");
         usuario1.setSobrenome("Sobrenome");
         String content = (new ObjectMapper()).writeValueAsString(usuario1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/getApto")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.usuarioController)
                 .build()
                 .perform(requestBuilder)
@@ -187,13 +183,12 @@ class UsuarioControllerTest {
                                         + "\"nroApto\":10}"));
     }
 
-    /**
-     * Method under test: {@link UsuarioController#login(LoginUsuario)}
-     */
+
     @Test
-    void testLogin() throws Exception {
+    void loginTest() throws Exception {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("exemplo@gmail.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -202,12 +197,14 @@ class UsuarioControllerTest {
         when(this.usuarioService.getUuarioByEmail((String) any())).thenReturn(ofResult);
 
         LoginUsuario loginUsuario = new LoginUsuario();
-        loginUsuario.setEmail("jane.doe@example.org");
+        loginUsuario.setEmail("exemplo@gmail.com");
         loginUsuario.setSenha("Senha");
         String content = (new ObjectMapper()).writeValueAsString(loginUsuario);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.usuarioController)
                 .build()
                 .perform(requestBuilder)
@@ -215,55 +212,26 @@ class UsuarioControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
                         .string(
-                                "{\"id\":123,\"nome\":\"Nome\",\"sobrenome\":\"Sobrenome\",\"email\":\"jane.doe@example.org\",\"senha\":\"Senha\"}"));
+                                "{\"id\":123,\"nome\":\"Nome\",\"sobrenome\":\"Sobrenome\",\"email\":\"exemplo@gmail.com\",\"senha\":\"Senha\"}"));
     }
 
-    /**
-     * Method under test: {@link UsuarioController#login(LoginUsuario)}
-     */
     @Test
-    void testLogin2() throws Exception {
-        Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
-        usuario.setId(123L);
-        usuario.setNome("Nome");
-        usuario.setSenha("?");
-        usuario.setSobrenome("Sobrenome");
-        Optional<Usuario> ofResult = Optional.of(usuario);
-        when(this.usuarioService.getUuarioByEmail((String) any())).thenReturn(ofResult);
-
-        LoginUsuario loginUsuario = new LoginUsuario();
-        loginUsuario.setEmail("jane.doe@example.org");
-        loginUsuario.setSenha("Senha");
-        String content = (new ObjectMapper()).writeValueAsString(loginUsuario);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content);
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.usuarioController)
-                .build()
-                .perform(requestBuilder);
-        actualPerformResult.andExpect(MockMvcResultMatchers.status().is(203))
-                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
-                .andExpect(MockMvcResultMatchers.content().string("Senha Cringe"));
-    }
-
-    /**
-     * Method under test: {@link UsuarioController#login(LoginUsuario)}
-     */
-    @Test
-    void testLogin3() throws Exception {
+    void loginTest3() throws Exception {
+        //given
         when(this.usuarioService.getUuarioByEmail((String) any())).thenReturn(Optional.empty());
 
         LoginUsuario loginUsuario = new LoginUsuario();
-        loginUsuario.setEmail("jane.doe@example.org");
+        loginUsuario.setEmail("exemplo@gmail.com");
         loginUsuario.setSenha("Senha");
         String content = (new ObjectMapper()).writeValueAsString(loginUsuario);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
         ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.usuarioController)
                 .build()
                 .perform(requestBuilder);
+        //then
         actualPerformResult.andExpect(MockMvcResultMatchers.status().is(203))
                 .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
                 .andExpect(MockMvcResultMatchers.content().string("Senha Cringe"));

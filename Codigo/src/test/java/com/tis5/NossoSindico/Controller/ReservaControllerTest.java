@@ -38,11 +38,10 @@ class ReservaControllerTest {
     @MockBean
     private ReservaService reservaService;
 
-    /**
-     * Method under test: {@link ReservaController#cria(ReservaResource)}
-     */
+
     @Test
-    void testCria() throws Exception {
+    void criaTest() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -54,7 +53,7 @@ class ReservaControllerTest {
         condominio.setRua("Rua");
 
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("teste@example.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -92,9 +91,11 @@ class ReservaControllerTest {
         reservaResource.setNumero(10);
         reservaResource.setNumero_pessoas(10);
         String content = (new ObjectMapper()).writeValueAsString(reservaResource);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/createReserva")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.reservaController)
                 .build()
                 .perform(requestBuilder)
@@ -104,16 +105,14 @@ class ReservaControllerTest {
                         .string(
                                 "{\"id\":123,\"data\":[1970,1,2],\"apto\":{\"id\":123,\"bloco\":\"Bloco\",\"numero\":10,\"sindico\":true,\"condominio\""
                                         + ":{\"id\":123,\"nome\":\"Nome\",\"rua\":\"Rua\",\"bairro\":\"Bairro\",\"cep\":\"Cep\",\"cidade\":\"Cidade\",\"numero\":10,\"code"
-                                        + "\":\"Code\"},\"usuario\":{\"id\":123,\"nome\":\"Nome\",\"sobrenome\":\"Sobrenome\",\"email\":\"jane.doe@example.org\","
+                                        + "\":\"Code\"},\"usuario\":{\"id\":123,\"nome\":\"Nome\",\"sobrenome\":\"Sobrenome\",\"email\":\"teste@example.com\","
                                         + "\"senha\":\"Senha\"}},\"lugar\":{\"id\":123,\"nome\":\"Nome\",\"descricao\":\"Descricao\",\"capacidadeMax\":1,\"id"
                                         + "_condominio\":1},\"descricao\":\"Descricao\"}"));
     }
 
-    /**
-     * Method under test: {@link ReservaController#cria(ReservaResource)}
-     */
+
     @Test
-    void testCria2() throws Exception {
+    void criaTest2() throws Exception {
         when(this.reservaService.create((ReservaResource) any())).thenReturn(Optional.empty());
 
         ReservaResource reservaResource = new ReservaResource();
@@ -133,11 +132,9 @@ class ReservaControllerTest {
         actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
-    /**
-     * Method under test: {@link ReservaController#lista(Condominio)}
-     */
     @Test
-    void testLista() throws Exception {
+    void listaTest() throws Exception {
+        //given
         when(this.reservaService.listByCondominio((Condominio) any())).thenReturn(new ArrayList<>());
 
         Condominio condominio = new Condominio();
@@ -150,9 +147,11 @@ class ReservaControllerTest {
         condominio.setNumero(10);
         condominio.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listReserva")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.reservaController)
                 .build()
                 .perform(requestBuilder)
@@ -161,11 +160,9 @@ class ReservaControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
-    /**
-     * Method under test: {@link ReservaController#lista(Condominio)}
-     */
     @Test
-    void testLista2() throws Exception {
+    void listaTest2() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("?");
         condominio.setCep("?");
@@ -219,9 +216,11 @@ class ReservaControllerTest {
         condominio1.setNumero(10);
         condominio1.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listReserva")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.reservaController)
                 .build()
                 .perform(requestBuilder)

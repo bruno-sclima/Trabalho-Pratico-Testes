@@ -44,11 +44,10 @@ class CondominioControllerTest {
     @MockBean
     private UsuarioService usuarioService;
 
-    /**
-     * Method under test: {@link CondominioController#att(Condominio)}
-     */
+
     @Test
-    void testAtt() throws Exception {
+    void attTest() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -70,9 +69,11 @@ class CondominioControllerTest {
         condominio1.setNumero(10);
         condominio1.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/attCond")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.condominioController)
                 .build()
                 .perform(requestBuilder)
@@ -84,13 +85,11 @@ class CondominioControllerTest {
                                         + "\":\"Code\"}"));
     }
 
-    /**
-     * Method under test: {@link CondominioController#cadastro(CadCondAptoResource)}
-     */
     @Test
-    void testCadastro() throws Exception {
+    void cadastroTest() throws Exception {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("test@example.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -119,7 +118,7 @@ class CondominioControllerTest {
         condominio1.setRua("Rua");
 
         Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
+        usuario1.setEmail("test@example.com");
         usuario1.setId(123L);
         usuario1.setNome("Nome");
         usuario1.setSenha("Senha");
@@ -145,9 +144,11 @@ class CondominioControllerTest {
         cadCondAptoResource.setNumeroApto(10);
         cadCondAptoResource.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(cadCondAptoResource);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cadCond")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.condominioController)
                 .build()
                 .perform(requestBuilder)
@@ -159,11 +160,9 @@ class CondominioControllerTest {
                                         + ":\"-846559024\"}"));
     }
 
-    /**
-     * Method under test: {@link CondominioController#codigoAcesso(Condominio)}
-     */
     @Test
-    void testCodigoAcesso() throws Exception {
+    void codigoAcessoTest() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -186,9 +185,11 @@ class CondominioControllerTest {
         condominio1.setNumero(10);
         condominio1.setRua("Rua");
         String content = (new ObjectMapper()).writeValueAsString(condominio1);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/codigoAcesso")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.condominioController)
                 .build()
                 .perform(requestBuilder)
@@ -197,11 +198,8 @@ class CondominioControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("Code"));
     }
 
-    /**
-     * Method under test: {@link CondominioController#codigoAcesso(Condominio)}
-     */
     @Test
-    void testCodigoAcesso2() throws Exception {
+    void codigoAcesso2Test() throws Exception {
         when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
 
         Condominio condominio = new Condominio();
@@ -223,13 +221,11 @@ class CondominioControllerTest {
         actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
-    /**
-     * Method under test: {@link CondominioController#entrarCondominio(AcessoCondominioResource)}
-     */
     @Test
-    void testEntrarCondominio() throws Exception {
+    void entrarCondominioTest() throws Exception {
+        //given
         Usuario usuario = new Usuario();
-        usuario.setEmail("jane.doe@example.org");
+        usuario.setEmail("teste@example.com");
         usuario.setId(123L);
         usuario.setNome("Nome");
         usuario.setSenha("Senha");
@@ -278,9 +274,11 @@ class CondominioControllerTest {
         acessoCondominioResource.setId_usuario(1L);
         acessoCondominioResource.setNumeroApto(10);
         String content = (new ObjectMapper()).writeValueAsString(acessoCondominioResource);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/entraCond")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.condominioController)
                 .build()
                 .perform(requestBuilder)

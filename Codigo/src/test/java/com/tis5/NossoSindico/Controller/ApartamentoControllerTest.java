@@ -46,17 +46,16 @@ class ApartamentoControllerTest {
     @MockBean
     private UsuarioService usuarioService;
 
-    /**
-     * Method under test: {@link ApartamentoController#isSindico(SindicoResource)}
-     */
-    @Test
-    void testIsSindico() throws Exception {
-        when(this.apartamentoService.isSindico(anyLong(), anyLong())).thenReturn(true);
 
+    @Test
+    void isSindicoTest() throws Exception {
+        //given
+        when(this.apartamentoService.isSindico(anyLong(), anyLong())).thenReturn(true);
         SindicoResource sindicoResource = new SindicoResource();
         sindicoResource.setId_condominio(1L);
         sindicoResource.setId_usuario(1L);
         String content = (new ObjectMapper()).writeValueAsString(sindicoResource);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/isSindico")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
@@ -66,14 +65,13 @@ class ApartamentoControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"));
         ContentResultMatchers contentResult = MockMvcResultMatchers.content();
+        //then
         resultActions.andExpect(contentResult.string(Boolean.TRUE.toString()));
     }
 
-    /**
-     * Method under test: {@link ApartamentoController#listCondUsu(Usuario)}
-     */
     @Test
-    void testListCondUsu() throws Exception {
+    void listCondUsuTest() throws Exception {
+        //given
         when(this.apartamentoService.listAptosByUsuario((Usuario) any())).thenReturn(Optional.of(new ArrayList<>()));
 
         Usuario usuario = new Usuario();
@@ -83,9 +81,11 @@ class ApartamentoControllerTest {
         usuario.setSenha("Senha");
         usuario.setSobrenome("Sobrenome");
         String content = (new ObjectMapper()).writeValueAsString(usuario);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listCondUsu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.apartamentoController)
                 .build()
                 .perform(requestBuilder)
@@ -94,11 +94,9 @@ class ApartamentoControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
-    /**
-     * Method under test: {@link ApartamentoController#listCondUsu(Usuario)}
-     */
     @Test
-    void testListCondUsu2() throws Exception {
+    void listCondUsu2Test() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("?");
         condominio.setCep("?");
@@ -130,7 +128,7 @@ class ApartamentoControllerTest {
         when(this.apartamentoService.listAptosByUsuario((Usuario) any())).thenReturn(ofResult);
 
         Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
+        usuario1.setEmail("bruno@example.com");
         usuario1.setId(123L);
         usuario1.setNome("Nome");
         usuario1.setSenha("Senha");
@@ -139,6 +137,7 @@ class ApartamentoControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listCondUsu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.apartamentoController)
                 .build()
                 .perform(requestBuilder)
@@ -149,13 +148,10 @@ class ApartamentoControllerTest {
                                 "[{\"id\":123,\"nome\":\"?\",\"rua\":\"?\",\"bairro\":\"?\",\"cep\":\"?\",\"cidade\":\"?\",\"numero\":10,\"code\":\"?\"}]"));
     }
 
-    /**
-     * Method under test: {@link ApartamentoController#listCondUsu(Usuario)}
-     */
     @Test
-    void testListCondUsu3() throws Exception {
+    void listCondUsu3Test() throws Exception {
+        //given
         when(this.apartamentoService.listAptosByUsuario((Usuario) any())).thenReturn(Optional.empty());
-
         Usuario usuario = new Usuario();
         usuario.setEmail("jane.doe@example.org");
         usuario.setId(123L);
@@ -163,9 +159,11 @@ class ApartamentoControllerTest {
         usuario.setSenha("Senha");
         usuario.setSobrenome("Sobrenome");
         String content = (new ObjectMapper()).writeValueAsString(usuario);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listCondUsu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.apartamentoController)
                 .build()
                 .perform(requestBuilder)
@@ -174,11 +172,9 @@ class ApartamentoControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
-    /**
-     * Method under test: {@link ApartamentoController#listCondUsu(Usuario)}
-     */
     @Test
-    void testListCondUsu4() throws Exception {
+    void listCondUsu4Test() throws Exception {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("?");
         condominio.setCep("?");
@@ -215,7 +211,7 @@ class ApartamentoControllerTest {
         condominio1.setRua("?");
 
         Usuario usuario1 = new Usuario();
-        usuario1.setEmail("jane.doe@example.org");
+        usuario1.setEmail("teste@example.com");
         usuario1.setId(123L);
         usuario1.setNome("?");
         usuario1.setSenha("?");
@@ -236,15 +232,17 @@ class ApartamentoControllerTest {
         when(this.apartamentoService.listAptosByUsuario((Usuario) any())).thenReturn(ofResult);
 
         Usuario usuario2 = new Usuario();
-        usuario2.setEmail("jane.doe@example.org");
+        usuario2.setEmail("teste@example.com");
         usuario2.setId(123L);
         usuario2.setNome("Nome");
         usuario2.setSenha("Senha");
         usuario2.setSobrenome("Sobrenome");
         String content = (new ObjectMapper()).writeValueAsString(usuario2);
+        //when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/listCondUsu")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
+        //then
         MockMvcBuilders.standaloneSetup(this.apartamentoController)
                 .build()
                 .perform(requestBuilder)

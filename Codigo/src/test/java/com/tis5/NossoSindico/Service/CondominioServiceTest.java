@@ -33,11 +33,9 @@ class CondominioServiceTest {
     @Autowired
     private CondominioService condominioService;
 
-    /**
-     * Method under test: {@link CondominioService#create(Condominio)}
-     */
     @Test
-    void testCreate() {
+    void createTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -58,25 +56,23 @@ class CondominioServiceTest {
         condominio1.setNome("Nome");
         condominio1.setNumero(10);
         condominio1.setRua("Rua");
-        assertSame(condominio, this.condominioService.create(condominio1));
+        //when
+        Condominio actual =  this.condominioService.create(condominio1);
+        //then
+        assertSame(condominio,actual);
         verify(this.condominioRepository).save((Condominio) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#listCondominios()}
-     */
     @Test
-    void testListCondominios() {
+    void listCondominiosTest() {
         when(this.condominioRepository.findAll()).thenReturn(new ArrayList<>());
         assertNull(this.condominioService.listCondominios());
         verify(this.condominioRepository).findAll();
     }
 
-    /**
-     * Method under test: {@link CondominioService#listCondominios()}
-     */
     @Test
-    void testListCondominios2() {
+    void listCondominiosTest2() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -90,17 +86,18 @@ class CondominioServiceTest {
         ArrayList<Condominio> condominioList = new ArrayList<>();
         condominioList.add(condominio);
         when(this.condominioRepository.findAll()).thenReturn(condominioList);
-        List<Condominio> actualListCondominiosResult = this.condominioService.listCondominios();
-        assertSame(condominioList, actualListCondominiosResult);
-        assertEquals(1, actualListCondominiosResult.size());
+        //when
+        List<Condominio> actual = this.condominioService.listCondominios();
+        //then
+        assertSame(condominioList, actual);
+        assertEquals(1, actual.size());
         verify(this.condominioRepository).findAll();
     }
 
-    /**
-     * Method under test: {@link CondominioService#getCondominioById(long)}
-     */
+
     @Test
-    void testGetCondominioById() {
+    void getCondominioByIdTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -112,17 +109,18 @@ class CondominioServiceTest {
         condominio.setRua("Rua");
         Optional<Condominio> ofResult = Optional.of(condominio);
         when(this.condominioRepository.findById((Long) any())).thenReturn(ofResult);
-        Optional<Condominio> actualCondominioById = this.condominioService.getCondominioById(123L);
-        assertSame(ofResult, actualCondominioById);
-        assertTrue(actualCondominioById.isPresent());
+        //when
+        Optional<Condominio> actual = this.condominioService.getCondominioById(123L);
+        //then
+        assertSame(ofResult, actual);
+        assertTrue(actual.isPresent());
         verify(this.condominioRepository).findById((Long) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#getCondominioByNome(String)}
-     */
+
     @Test
-    void testGetCondominioByNome() {
+    void getCondominioByNomeTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -134,25 +132,25 @@ class CondominioServiceTest {
         condominio.setRua("Rua");
         Optional<Condominio> ofResult = Optional.of(condominio);
         when(this.condominioRepository.findByNome((String) any())).thenReturn(ofResult);
-        assertSame(condominio, this.condominioService.getCondominioByNome("Nome"));
+        //when
+        Condominio actual = this.condominioService.getCondominioByNome("Nome");
+        //then
+        assertSame(condominio,actual );
         verify(this.condominioRepository).findByNome((String) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#getCondominioByNome(String)}
-     */
+
     @Test
-    void testGetCondominioByNome2() {
+    void getCondominioByNomeTest2() {
         when(this.condominioRepository.findByNome((String) any())).thenReturn(Optional.empty());
         assertNull(this.condominioService.getCondominioByNome("Nome"));
         verify(this.condominioRepository).findByNome((String) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#deleteCondominioById(long)}
-     */
+
     @Test
-    void testDeleteCondominioById() {
+    void deleteCondominioByIdTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -165,27 +163,16 @@ class CondominioServiceTest {
         Optional<Condominio> ofResult = Optional.of(condominio);
         doNothing().when(this.condominioRepository).deleteById((Long) any());
         when(this.condominioRepository.findById((Long) any())).thenReturn(ofResult);
+        //when
         this.condominioService.deleteCondominioById(123L);
+        //then
         verify(this.condominioRepository).findById((Long) any());
         verify(this.condominioRepository).deleteById((Long) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#deleteCondominioById(long)}
-     */
     @Test
-    void testDeleteCondominioById2() {
-        doNothing().when(this.condominioRepository).deleteById((Long) any());
-        when(this.condominioRepository.findById((Long) any())).thenReturn(Optional.empty());
-        this.condominioService.deleteCondominioById(123L);
-        verify(this.condominioRepository).findById((Long) any());
-    }
-
-    /**
-     * Method under test: {@link CondominioService#update(Condominio)}
-     */
-    @Test
-    void testUpdate() {
+    void updateTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -218,16 +205,15 @@ class CondominioServiceTest {
         condominio2.setNome("Nome");
         condominio2.setNumero(10);
         condominio2.setRua("Rua");
+        //then
         assertSame(condominio1, this.condominioService.update(condominio2));
         verify(this.condominioRepository).save((Condominio) any());
         verify(this.condominioRepository).findById((Long) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#update(Condominio)}
-     */
+
     @Test
-    void testUpdate2() {
+    void updateTest2() {
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -253,11 +239,9 @@ class CondominioServiceTest {
         verify(this.condominioRepository).findById((Long) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#enterCondominio(String)}
-     */
     @Test
-    void testEnterCondominio() {
+    void enterCondominioTest() {
+        //given
         Condominio condominio = new Condominio();
         condominio.setBairro("Bairro");
         condominio.setCep("Cep");
@@ -269,15 +253,16 @@ class CondominioServiceTest {
         condominio.setRua("Rua");
         Optional<Condominio> ofResult = Optional.of(condominio);
         when(this.condominioRepository.findByCode((String) any())).thenReturn(ofResult);
-        assertSame(condominio, this.condominioService.enterCondominio("Acesso"));
+        //when
+        Condominio actual =  this.condominioService.enterCondominio("Acesso");
+        //then
+        assertSame(condominio,actual);
         verify(this.condominioRepository).findByCode((String) any());
     }
 
-    /**
-     * Method under test: {@link CondominioService#enterCondominio(String)}
-     */
+
     @Test
-    void testEnterCondominio2() {
+    void enterCondominioTest2() {
         when(this.condominioRepository.findByCode((String) any())).thenReturn(Optional.empty());
         assertNull(this.condominioService.enterCondominio("Acesso"));
         verify(this.condominioRepository).findByCode((String) any());
