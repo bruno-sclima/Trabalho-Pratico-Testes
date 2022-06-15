@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tis5.NossoSindico.Service.CondominioService;
 import com.tis5.NossoSindico.Service.DespessaService;
@@ -28,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -36,6 +38,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ContextConfiguration(classes = {DespessaController.class})
 @ExtendWith(SpringExtension.class)
 class DespessaControllerTest {
+
     @MockBean
     private CondominioService condominioService;
 
@@ -46,62 +49,109 @@ class DespessaControllerTest {
     private DespessaService despessaService;
 
     @Test
-    @Disabled("TODO: Complete this test")
-    void testCadastro() throws ParseException {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException: Cannot invoke "com.tis5.NossoSindico.Service.CondominioService.getCondominioById(long)" because "this.condominioService" is null
-        //       at com.tis5.NossoSindico.Controller.DespessaController.cadastro(DespessaController.java:30)
-        //   In order to prevent cadastro(DespessaResource)
-        //   from throwing NullPointerException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   cadastro(DespessaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
+    void cadastroTest() throws Exception {
 
-        DespessaController despessaController = new DespessaController();
+        //given
+        Condominio condominio = new Condominio();
+        condominio.setBairro("Bairro");
+        condominio.setCep("Cep");
+        condominio.setCidade("Cidade");
+        condominio.setCode("Code");
+        condominio.setId(123L);
+        condominio.setNome("Nome");
+        condominio.setNumero(10);
+        condominio.setRua("Rua");
+
+        Despessa despessa = new Despessa();
+        despessa.setCondominio(condominio);
+        despessa.setData_referente(LocalDate.ofEpochDay(1L));
+        despessa.setDescricao("Descricao");
+        despessa.setId(123L);
+        despessa.setTitulo("Titulo");
+        despessa.setValor(10.0d);
+        when(this.despessaService.create((Despessa) any())).thenReturn(despessa);
+
+        Condominio condominio1 = new Condominio();
+        condominio1.setBairro("Bairro");
+        condominio1.setCep("Cep");
+        condominio1.setCidade("Cidade");
+        condominio1.setCode("Code");
+        condominio1.setId(123L);
+        condominio1.setNome("Nome");
+        condominio1.setNumero(10);
+        condominio1.setRua("Rua");
+        Optional<Condominio> ofResult = Optional.of(condominio1);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(ofResult);
 
         DespessaResource despessaResource = new DespessaResource();
-        despessaResource.setData_referente(LocalDate.ofEpochDay(1L));
+        despessaResource.setData_referente(null);
         despessaResource.setDescricao("Descricao");
         despessaResource.setId_condominio(1L);
         despessaResource.setTitulo("Titulo");
         despessaResource.setValor(10.0d);
-        despessaController.cadastro(despessaResource);
+        String content = (new ObjectMapper()).writeValueAsString(despessaResource);
+
+        //when
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cadDespessa")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        //then
+        MockMvcBuilders.standaloneSetup(this.despessaController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string(
+                                "{\"id\":123,\"titulo\":\"Titulo\",\"descricao\":\"Descricao\",\"valor\":10.0,\"data_referente\":[1970,1,2],\"condominio"
+                                        + "\":{\"id\":123,\"nome\":\"Nome\",\"rua\":\"Rua\",\"bairro\":\"Bairro\",\"cep\":\"Cep\",\"cidade\":\"Cidade\",\"numero\":10,"
+                                        + "\"code\":\"Code\"}}"));
     }
 
+    @Test
+    void cadastroTest2() throws Exception {
 
-    @Disabled("TODO: Complete this test")
-    void testCadastro2() throws ParseException {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException: Cannot invoke "com.tis5.NossoSindico.Service.CondominioService.getCondominioById(long)" because "this.condominioService" is null
-        //       at com.tis5.NossoSindico.Controller.DespessaController.cadastro(DespessaController.java:30)
-        //   In order to prevent cadastro(DespessaResource)
-        //   from throwing NullPointerException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   cadastro(DespessaResource).
-        //   See https://diff.blue/R013 to resolve this issue.
+        //given
+        Condominio condominio = new Condominio();
+        condominio.setBairro("Bairro");
+        condominio.setCep("Cep");
+        condominio.setCidade("Cidade");
+        condominio.setCode("Code");
+        condominio.setId(123L);
+        condominio.setNome("Nome");
+        condominio.setNumero(10);
+        condominio.setRua("Rua");
 
-        DespessaController despessaController = new DespessaController();
-        DespessaResource despessaResource = mock(DespessaResource.class);
-        when(despessaResource.getId_condominio()).thenReturn(1L);
-        doNothing().when(despessaResource).setData_referente((LocalDate) any());
-        doNothing().when(despessaResource).setDescricao((String) any());
-        doNothing().when(despessaResource).setId_condominio(anyLong());
-        doNothing().when(despessaResource).setTitulo((String) any());
-        doNothing().when(despessaResource).setValor(anyDouble());
-        despessaResource.setData_referente(LocalDate.ofEpochDay(1L));
+        Despessa despessa = new Despessa();
+        despessa.setCondominio(condominio);
+        despessa.setData_referente(LocalDate.ofEpochDay(1L));
+        despessa.setDescricao("Descricao");
+        despessa.setId(123L);
+        despessa.setTitulo("Titulo");
+        despessa.setValor(10.0d);
+        when(this.despessaService.create((Despessa) any())).thenReturn(despessa);
+        when(this.condominioService.getCondominioById(anyLong())).thenReturn(Optional.empty());
+
+        DespessaResource despessaResource = new DespessaResource();
+        despessaResource.setData_referente(null);
         despessaResource.setDescricao("Descricao");
         despessaResource.setId_condominio(1L);
         despessaResource.setTitulo("Titulo");
         despessaResource.setValor(10.0d);
-        despessaController.cadastro(despessaResource);
-    }
+        String content = (new ObjectMapper()).writeValueAsString(despessaResource);
 
+        //when
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/cadDespessa")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        //then
+        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.despessaController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 
     @Test
     void listDespessasTest() throws Exception {

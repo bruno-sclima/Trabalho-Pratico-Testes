@@ -37,7 +37,7 @@ public class CondominioController {
     @RequestMapping(method = RequestMethod.POST, value = "entraCond")
     public ResponseEntity<Condominio> entrarCondominio(@RequestBody AcessoCondominioResource acr) {
         Condominio cond = service.enterCondominio(acr.getAcesso());
-        if(cond !=null){
+        if(cond != null){
             Usuario usu = usuService.getUsuarioById(acr.getId_usuario());
             Apartamento apto = aptoService.create(Apartamento.builder().condominio(cond).numero(acr.getNumeroApto()).usuario(usu).sindico(false)
                     .build());

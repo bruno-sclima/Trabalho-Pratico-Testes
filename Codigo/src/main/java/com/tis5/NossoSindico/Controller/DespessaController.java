@@ -4,12 +4,10 @@ import com.tis5.NossoSindico.Service.CondominioService;
 import com.tis5.NossoSindico.Service.DespessaService;
 import com.tis5.NossoSindico.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Collections;
@@ -26,7 +24,7 @@ public class DespessaController {
     private CondominioService condominioService;
 
     @RequestMapping(method = RequestMethod.POST, value = "cadDespessa")
-    public ResponseEntity<Despessa> cadastro(@RequestBody DespessaResource aux) throws ParseException {
+    public ResponseEntity<Despessa> cadastro(@RequestBody DespessaResource aux) {
         Optional<Condominio> c = condominioService.getCondominioById(aux.getId_condominio());
         if(c.isPresent()) {
             Despessa d = Despessa.builder().condominio(c.get()).data_referente(aux.getData_referente()).descricao(aux.getDescricao())
